@@ -50,6 +50,8 @@ class Miniplayer extends StatefulWidget {
   //Allows you to manually control the miniplayer in code
   final MiniplayerController? controller;
 
+  final Decoration? decoration;
+
   const Miniplayer({
     Key? key,
     required this.minHeight,
@@ -63,6 +65,7 @@ class Miniplayer extends StatefulWidget {
     this.onDismiss,
     this.onDismissed,
     this.controller,
+    this.decoration
   }) : super(key: key);
 
   @override
@@ -165,10 +168,14 @@ class _MiniplayerState extends State<Miniplayer> with TickerProviderStateMixin {
               if (_percentage > 0)
                 GestureDetector(
                   onTap: () => _animateToHeight(widget.minHeight),
-                  child: Opacity(
-                    opacity: borderDouble(
-                        minRange: 0.0, maxRange: 1.0, value: _percentage),
-                    child: Container(color: widget.backgroundColor),
+                  // child: AnimatedOpacity(
+                  //   duration: Duration.zero,
+                  //   opacity: borderDouble(
+                  //       minRange: 0.0, maxRange: 1.0, value: _percentage),
+                  //   child: Container(color: widget.backgroundColor),
+                  // ),
+                  child: Container(
+                    color: widget.backgroundColor,
                   ),
                 ),
               Align(
@@ -182,28 +189,25 @@ class _MiniplayerState extends State<Miniplayer> with TickerProviderStateMixin {
                           (BuildContext context, double value, Widget? child) {
                         if (value == 0) return child!;
 
-                        return Opacity(
-                          opacity: borderDouble(
-                              minRange: 0.0, maxRange: 1.0, value: 1 - value * 0.8),
-                          child: Transform.translate(
-                            offset: Offset(0.0, widget.minHeight * value * 0.5),
-                            child: child,
-                          ),
+                        // return AnimatedOpacity(
+                        //   duration: Duration.zero,
+                        //   opacity: borderDouble(
+                        //       minRange: 0.0, maxRange: 1.0, value: 1 - value * 0.8),
+                        //   child: Transform.translate(
+                        //     offset: Offset(0.0, widget.minHeight * value * 0.5),
+                        //     child: child,
+                        //   ),
+                        // );
+                        return Transform.translate(
+                          offset: Offset(0.0, widget.minHeight * value * 0.5),
+                          child: child,
                         );
                       },
                       child: Material(
                         child: Container(
                           constraints: BoxConstraints.expand(),
                           child: widget.builder(height, _percentage),
-                          decoration: BoxDecoration(
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(
-                                  color: Colors.black45,
-                                  blurRadius: widget.elevation,
-                                  offset: Offset(0.0, 4))
-                            ],
-                            color: Theme.of(context).canvasColor,
-                          ),
+                          decoration: widget.decoration
                         ),
                       ),
                     ),
